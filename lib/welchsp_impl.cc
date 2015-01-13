@@ -36,12 +36,12 @@ namespace gr {
     {
       float scale = 1.0 / (fft_len * 2 * M_PI);
       if (window.size() == 0) {
-	return scale;
+        return scale;
       }
 
       float window_power = 0;
       for(unsigned i = 0; i < window.size(); i++) {
-	window_power += window[i] * window[i];
+        window_power += window[i] * window[i];
       }
       window_power /= fft_len;
 
@@ -54,10 +54,10 @@ namespace gr {
     specest_check_arguments_impl(unsigned fft_len, int overlap, const std::vector<float> &window)
     {
       if (window.size() != 0 && window.size() != fft_len) {
-	throw std::invalid_argument("specest_welchsp: when providing a window, it must have the same length as fft_len.");
+        throw std::invalid_argument("specest_welchsp: when providing a window, it must have the same length as fft_len.");
       }
       if (overlap < -1) {
-	throw std::invalid_argument("specest_welchsp: overlap can not be negative.");
+        throw std::invalid_argument("specest_welchsp: overlap can not be negative.");
       }
     }
 
@@ -66,7 +66,7 @@ namespace gr {
     {
       specest_check_arguments_impl(fft_len, overlap, window);
       return gnuradio::get_initial_sptr
-	(new welchsp_impl(fft_len, overlap, alpha, fft_shift, window));
+              (new welchsp_impl(fft_len, overlap, alpha, fft_shift, window));
     }
 
     welchsp::sptr
@@ -74,17 +74,17 @@ namespace gr {
     {
       std::vector<float> window;
       if (window_type != gr::filter::firdes::WIN_RECTANGULAR) {
-	std::vector<float> window = gr::filter::firdes::window((gr::filter::firdes::win_type)window_type, fft_len, beta);
+        std::vector<float> window = gr::filter::firdes::window((gr::filter::firdes::win_type)window_type, fft_len, beta);
       }
       specest_check_arguments_impl(fft_len, overlap, window);
       return gnuradio::get_initial_sptr
-	(new welchsp_impl(fft_len, overlap, alpha, fft_shift, window));
+              (new welchsp_impl(fft_len, overlap, alpha, fft_shift, window));
     }
 
     welchsp_impl::welchsp_impl(unsigned fft_len, int overlap, double alpha, bool fft_shift, const std::vector<float> &window)
       : gr::hier_block2("welchsp",
-	  gr::io_signature::make(1, 1, sizeof(gr_complex)),
-	  gr::io_signature::make(1, 1, sizeof(float) * fft_len)),
+          gr::io_signature::make(1, 1, sizeof(gr_complex)),
+          gr::io_signature::make(1, 1, sizeof(float) * fft_len)),
       d_fft_len(fft_len),
       d_stream_to_vector(gr::specest::stream_to_vector_overlap::make(sizeof(gr_complex), fft_len, (overlap == -1) ? fft_len/2 : overlap)),
       d_fft(gr::fft::fft_vcc::make(fft_len, true, window, fft_shift)),
